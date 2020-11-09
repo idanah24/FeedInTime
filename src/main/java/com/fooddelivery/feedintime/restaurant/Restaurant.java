@@ -1,8 +1,17 @@
 package com.fooddelivery.feedintime.restaurant;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Restaurant {
 
+	@Id
+	@GeneratedValue
 	private Long id;
+	
+	
 	private String name;
 	
 //	TODO: Consider address model
@@ -20,9 +29,8 @@ public class Restaurant {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Restaurant(Long id, String name, String address, String phoneNumber, String menu, String owner) {
+	public Restaurant(String name, String address, String phoneNumber, String menu, String owner) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
