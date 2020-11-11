@@ -1,5 +1,6 @@
 package com.fooddelivery.feedintime.restaurant;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,18 +10,25 @@ public class Restaurant {
 
 	@Id
 	@GeneratedValue
+	@Column(name="id")
 	private Long id;
 	
 	
+	@Column(name="name")
 	private String name;
 	
 //	TODO: Consider address model
+	@Column(name="address")
 	private String address;
 	
+	@Column(name="phoneNumber")
 	private String phoneNumber;
 	
 //	TODO: Refer to models
+	@Column(name="menu")
 	private String menu;
+	
+	@Column(name="owner")
 	private String owner;
 	
 	
