@@ -5,14 +5,14 @@ const app = express();
 const config = require('./utilities/config')
 
 // Routers
-// const users = require('./routes/users')
+const users = require('./routes/users')
 
 // Middleware
 app.use(express.json())
 app.use(express.static('./public'))
 
 // // Routes
-// app.use('/api/users', users)
+app.use('/api/users', users)
 
 
 app.all('*', (req, res) => {
