@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/users');
+const auth = require('../utilities/auth')
 
 // Create
 // Everyone
@@ -15,9 +16,10 @@ router.get('/', controller.getUser)
 router.put('/', controller.updateUser)
 
 // Delete
-// Admin
-router.put('/', controller.deleteUser)
+// Admin or same user
+router.delete('/', auth.verifySameUser, controller.deleteUser)
 
+// Not already logged in
 router.post('/login', controller.login)
 
 router.post('/logout', controller.logout)

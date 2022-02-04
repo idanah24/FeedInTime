@@ -1,2 +1,3 @@
 node_modules
 utilities/config.js
+.env

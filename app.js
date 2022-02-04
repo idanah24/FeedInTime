@@ -1,8 +1,6 @@
 const express = require('express');
 const app = express();
-
-// Config
-const config = require('./utilities/config')
+require('dotenv').config()
 
 // Routers
 const users = require('./routes/users')
@@ -21,6 +19,6 @@ app.all('*', (req, res) => {
 
 
 
-app.listen(config.server.port, () => {
-    console.log(`Server running on port ${config.server.port}...`)
+app.listen(process.env.SERVER_PORT, () => {
+    console.log(`Server running on port ${process.env.SERVER_PORT}...`)
 })

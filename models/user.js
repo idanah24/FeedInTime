@@ -16,40 +16,38 @@ class User {
             return true
         }
         catch(err){
-            console.log(err)
             return false
         }
     }
 
     static async find(params){
         // Prepare query and data binds
-        let query = 'SELECT * FROM USERS'
+        let query = 'SELECT * FROM USERS WHERE '
         let binds = []
 
         if("id" in params){
-            query += ' WHERE id = ?'
+            query += 'id = ?'
             binds = [params.id]
         }
         else if("email" in params){
-            query += ' WHERE email = ?'
+            query += 'email = ?'
             binds = [params.email]
         }
         
         // Search database
         try{
             const [data, _] = await db.query(query, binds)
-            return data
+            return data.length > 0 ? new User(data[0]) : undefined
         }
         catch(err){
-            return false
+            console.log(err);
+            return null
         }
 
         
     }
 
 }
-
-
 
 
 
