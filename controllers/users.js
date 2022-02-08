@@ -1,7 +1,9 @@
 const User = require('../models/user');
-const { registerValidation, loginValidation } = require('../utilities/validations/user');
+const { registerValidation, loginValidation, updateValidation, deleteValidation } = require('../utilities/validations/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { json } = require('express/lib/response');
+
 require('../utilities/validations/user');
 
 require('dotenv').config()
@@ -52,13 +54,48 @@ exports.createUser = async (req, res) => {
 }
 
 exports.updateUser = async (req, res) => {
+    // Verify new data supplied
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0) return res.status(400).json({msg: "No new data to update"}).send()
 
+    // Validate data
+    const validationErrors = updateValidation(req.body)
+    if(validationErrors) return res.status(400).json({errors: validationErrors}).send()
 
+    // Hash password if given
+    if('password' in req.body){ 
+        const salt = await bcrypt.genSalt(10)
+        req.body.password = await bcrypt.hash(req.body.password, salt)
+    }
+
+    // Determine updated entry
+    const changeId = req.user.role === 'admin' ? req.body.email : req.user.email
+
+    // Attempting to update
+    const updated = await User.update(changeId, req.body)
+    if(!updated) return res.status(500).json({msg: "Failed to update information"}).send()
+
+    // Information updated
+    return res.status(200).json({msg: "User updated successfully"}).send()
 }
 
 exports.deleteUser = async (req, res) => {
+    let email = ''
+    // Determine delete entry
+    if(req.user.role === 'admin'){
+        
+        const validationErrors = deleteValidation(req.body)
+        if(validationErrors) return res.status(400).json({errors: validationErrors}).send()
+        email = req.body.email
+    }
+    else{
+        email = req.user.email
+    }
 
-    return res.status(201).send('Authentication valid')
+    const deleted = await User.delete(email)
+    if(!deleted) return 0
+
+
+    return res.status(200).json({msg: "User removed successfully"}).send()
 }
 
 exports.login = async (req, res) => {
@@ -79,6 +116,7 @@ exports.login = async (req, res) => {
     return res.header('auth-token', token).status(200).send({msg: 'Login successfully'})
 }
 
+// TODO: Implement logout on client-side
 exports.logout = async (req, res) => {
 
 

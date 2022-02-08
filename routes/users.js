@@ -9,19 +9,20 @@ router.post('/', controller.createUser)
 
 // Read
 // Admin
-router.get('/', controller.getUser)
+router.get('/', auth.verifyAdmin, controller.getUser)
 
 // Update
 // Admin or Same user
-router.put('/', controller.updateUser)
+router.put('/', auth.verifySameUser, controller.updateUser)
 
 // Delete
 // Admin or same user
 router.delete('/', auth.verifySameUser, controller.deleteUser)
 
-// Not already logged in
 router.post('/login', controller.login)
 
+
+// TODO: Logout on client side
 router.post('/logout', controller.logout)
 
 

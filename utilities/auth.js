@@ -14,11 +14,18 @@ function authenticate(req, res) {
     }
 }
 
+exports.verifyAdmin = (req, res, next) => {
+    const user = authenticate(req, res)
+    if(!("iat" in user)) return user
+    if(user.role !== 'owner' && user.role !== 'admin') return res.status(403).send({msg: 'Insufficient privliges'})
+    req.user = user
+    next()
+}
 
 exports.verifyOwner = (req, res, next) => {
     const user = authenticate(req, res)
     if(!("iat" in user)) return user
-    if(user.role !== 'owner') return res.status(403).send({msg: 'Insufficient privliges'})
+    if(user.role !== 'owner' && user.role !== 'admin') return res.status(403).send({msg: 'Insufficient privliges'})
     req.user = user
     next()
 }
@@ -26,7 +33,7 @@ exports.verifyOwner = (req, res, next) => {
 exports.verifyCustomer = (req, res, next) => {
     const user = authenticate(req, res)
     if(!("iat" in user)) return user
-    if(user.role !== 'customer') return res.status(403).send({msg: 'Insufficient privliges'})
+    if(user.role !== 'customer' && user.role !== 'admin') return res.status(403).send({msg: 'Insufficient privliges'})
     req.user = user
     next()
 }
@@ -34,7 +41,7 @@ exports.verifyCustomer = (req, res, next) => {
 exports.verifySameUser = (req, res, next) => {
     const user = authenticate(req, res)
     if(!("iat" in user)) return user
-    if(req.body.email !== user.email) return res.status(403).send({msg: 'Insufficient privliges'})
+    if(req.body.email !== user.email && user.role !== 'admin') return res.status(403).send({msg: 'Insufficient privliges'})
     req.user = user
     next()
 }

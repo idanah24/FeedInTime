@@ -11,7 +11,7 @@ class User {
 
     async save(){
         try{
-            await db.execute('INSERT INTO USERS(email, password, name, role) VALUES(?, ?, ?, ?)',
+            const res = await db.execute('INSERT INTO USERS(email, password, name, role) VALUES(?, ?, ?, ?)',
              [this.email, this.password, this.name, this.role])
             return true
         }
@@ -45,6 +45,45 @@ class User {
         }
 
         
+    }
+
+    static async update(changeId, values){
+
+        // Preparing column parameters
+        let columns = ''
+        for (const property in values) {
+            columns = columns + property + " = ?, "
+        }
+        columns = columns.substring(0, columns.length - 2)
+
+        // Preparing query
+        const query = 'UPDATE USERS SET ' + columns + ' WHERE email = ?'
+
+        // Preparing bind paramteters
+        const binds = Object.values(values)
+        binds.push(changeId)
+
+        // Attempt update
+        try{
+            const res = await db.execute(query, binds)
+            return true
+        }
+        catch(err){
+            return false
+        }
+
+    }
+
+
+    static async delete(email){
+        try{
+            const res = await db.execute('DELETE FROM USERS WHERE email = ?', [email])
+            return true
+        }
+        catch(err){
+            return false
+        }
+
     }
 
 }

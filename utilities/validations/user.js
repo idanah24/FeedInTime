@@ -20,6 +20,12 @@ exports.registerValidation = data => {
 
 exports.loginValidation = data => {
     const schema = { email : modelSchema.email, password : modelSchema.password }
-    const validation = Joi.object(schema).validate(data)
+    const validation = Joi.object(schema).validate(data, {abortEarly : false})
+    return validationResult(validation)
+}
+
+exports.deleteValidation = data => {
+    const schema = { email : modelSchema.email }
+    const validation = Joi.object(schema).validate(data, {abortEarly : false})
     return validationResult(validation)
 }
